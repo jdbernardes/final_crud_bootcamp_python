@@ -1,0 +1,43 @@
+services:
+  postgres:
+    image: postgres
+    container_name: ${DB_CONTAINER_NAME}
+    hostname: ${HOSTNAME_SERVER}
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "15432:5432"
+    volumes:
+        - postgres_data:/var/lib/postgresql/data
+    networks:
+      - crud_network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: ${PG_CONTAINER_NAME}
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "16543:80"
+    depends_on:
+      - postgres
+    networks:
+      - crud_network
+    volumes:
+      - postgres_pg_data:/var/lib/pgadmin
+
+  #backend:
+  #frontend:
+
+networks:
+  crud_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    external: false
+  postgres_pg_data:
+    external: false
